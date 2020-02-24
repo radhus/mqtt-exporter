@@ -40,6 +40,8 @@ func main() {
 
 	prometheus.MustRegister(topicGauge)
 
+	mqtt.ERROR = log.New(os.Stderr, "[mqtt] ", log.LstdFlags)
+
 	opts := mqtt.NewClientOptions().AddBroker(*url).SetClientID(*clientID)
 	opts.SetKeepAlive(2 * time.Second)
 	opts.SetPingTimeout(1 * time.Second)
