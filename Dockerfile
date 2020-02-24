@@ -1,6 +1,9 @@
 FROM golang:1.13 AS builder
 
 WORKDIR /go/src/app
+ADD go.mod go.sum /go/src/app/
+RUN go mod download
+
 ADD . /go/src/app
 RUN go build -o /go/bin/mqtt-exporter
 
