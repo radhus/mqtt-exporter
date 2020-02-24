@@ -45,6 +45,7 @@ func main() {
 	opts := mqtt.NewClientOptions().AddBroker(*url).SetClientID(*clientID)
 	opts.SetKeepAlive(2 * time.Second)
 	opts.SetPingTimeout(1 * time.Second)
+	opts.SetConnectionLostHandler(connectionLostHandler)
 
 	client := mqtt.NewClient(opts)
 	if token := client.Connect(); token.Wait() && token.Error() != nil {
@@ -69,4 +70,8 @@ func messageHandler(_ mqtt.Client, message mqtt.Message) {
 	}
 
 	topicGauge.With(prometheus.Labels{topicLabel: message.Topic()}).SetToCurrentTime()
+}
+
+func connectionLostHandler(_ mqtt.Client, err error) {
+	log.Fatalln("Connection lost, terminating:", err)
 }
