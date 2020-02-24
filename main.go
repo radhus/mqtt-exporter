@@ -42,6 +42,8 @@ func main() {
 
 	mqtt.ERROR = log.New(os.Stderr, "[mqtt] ", log.LstdFlags)
 
+	log.Println("Starting mqtt-exporter...")
+
 	opts := mqtt.NewClientOptions().AddBroker(*url).SetClientID(*clientID)
 	opts.SetKeepAlive(2 * time.Second)
 	opts.SetPingTimeout(1 * time.Second)
@@ -57,6 +59,7 @@ func main() {
 		log.Fatalln("Failed to subscribe to MQTT:", token.Error())
 	}
 
+	log.Println("Listening on:", *listenAddr)
 	http.Handle("/metrics", promhttp.Handler())
 	err := http.ListenAndServe(*listenAddr, nil)
 	if err != nil {
